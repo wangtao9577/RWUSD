@@ -1,0 +1,70 @@
+[
+  [
+    {
+      "rows": [
+        {
+          "symbol": "BTCUSDT",
+          "close": "60000",
+          "liquidity": "1.00",
+          "volatility": "0.32",
+          "funding": "0.45",
+          "margin": "1.00",
+          "blocked": false
+        },
+        {
+          "symbol": "ETHUSDT",
+          "close": "3000",
+          "liquidity": "0.86",
+          "volatility": "0.28",
+          "funding": "0.70",
+          "margin": "0.82",
+          "blocked": false
+        },
+        {
+          "symbol": "SOLUSDT",
+          "close": "150",
+          "liquidity": "0.58",
+          "volatility": "0.24",
+          "funding": "0.30",
+          "margin": "0.55",
+          "blocked": false
+        }
+      ],
+      "current_drawdown": "0.00"
+    }
+  ],
+  [
+    {
+      "rows": [
+        {
+          "symbol": "BTCUSDT",
+          "close": "60200",
+          "liquidity": "0.92",
+          "volatility": "0.25",
+          "funding": "0.38",
+          "margin": "0.94",
+          "blocked": false
+        },
+        {
+          "symbol": "ETHUSDT",
+          "close": "3050",
+          "liquidity": "0.95",
+          "volatility": "0.31",
+          "funding": "0.82",
+          "margin": "0.90",
+          "blocked": false
+        },
+        {
+          "symbol": "SOLUSDT",
+          "close": "152",
+          "liquidity": "0.60",
+          "volatility": "0.26",
+          "funding": "0.35",
+          "margin": "0.58",
+          "blocked": false
+        }
+      ],
+      "current_drawdown": "0.01"
+    }
+  ]
+]

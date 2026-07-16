@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project2 Simulation Credential Entry</title>
+  <style>
+    :root {
+      --bg: #f4efe7;
+      --card: #fffdf9;
+      --line: #ddcfbc;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #9a5b20;
+      --good: #0f766e;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(154, 91, 32, 0.12), transparent 32%),
+        linear-gradient(180deg, #f9f5ed 0%, var(--bg) 100%);
+    }
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 28px 18px 48px;
+    }
+    .hero, .card {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--card);
+      box-shadow: 0 18px 60px rgba(31, 41, 55, 0.08);
+    }
+    .hero {
+      padding: 28px;
+    }
+    .hero p {
+      line-height: 1.7;
+      color: var(--muted);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .card {
+      padding: 20px;
+    }
+    h1, h2, p { margin: 0; }
+    h2 {
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+    form {
+      display: grid;
+      gap: 14px;
+    }
+    label {
+      display: grid;
+      gap: 6px;
+      font-weight: 600;
+    }
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      font: inherit;
+      background: #fff;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font: inherit;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #a35d24, #7f4519);
+      cursor: pointer;
+    }
+    ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .status {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #faf7f2;
+      color: var(--muted);
+      white-space: pre-wrap;
+    }
+    .status.good {
+      color: var(--good);
+      border-color: rgba(15, 118, 110, 0.25);
+      background: rgba(15, 118, 110, 0.08);
+    }
+    .status.bad {
+      color: var(--bad);
+      border-color: rgba(185, 28, 28, 0.25);
+      background: rgba(185, 28, 28, 0.08);
+    }
+    .mono {
+      font-family: Consolas, "SFMono-Regular", monospace;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <h1>Project2 Simulation Credential Entry</h1>
+      <p>This page is simulation-only. Access it through SSH port forwarding and use it only for the isolated Project2 simulation workflow.</p>
+      <p>This page does not modify the public 8081 monitor page and does not touch the three running production accounts.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>Safety Boundary</h2>
+        <ul>
+          <li>Bind this control server to <span class="mono">127.0.0.1</span> only.</li>
+          <li>Open the page through SSH port forwarding.</li>
+          <li>Only <span class="mono">API Key</span> and <span class="mono">API Secret</span> can be edited here.</li>
+          <li><span class="mono">LIVE_LOG_PATH</span> remains fixed to the safe default.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>Credential Form</h2>
+        <form id="config-form">
+          <label>
+            API Key
+            <input type="text" name="api_key" autocomplete="off" required>
+          </label>
+          <label>
+            API Secret
+            <input type="password" name="api_secret" autocomplete="off" required>
+          </label>
+          <button type="submit">Save Simulation Config</button>
+        </form>
+        <div id="submit-status" class="status">Waiting for input.</div>
+      </article>
+    </section>
+
+    <section class="card" style="margin-top: 18px;">
+      <h2>Current Status</h2>
+      <div id="config-status" class="status">Loading /api/config-status ...</div>
+    </section>
+  </main>
+
+  <script>
+    const configStatusEl = document.getElementById("config-status");
+    const submitStatusEl = document.getElementById("submit-status");
+    const formEl = document.getElementById("config-form");
+
+    function setStatus(target, message, type) {
+      target.className = `status ${type || ""}`.trim();
+      target.textContent = message;
+    }
+
+    function renderConfigStatus(payload) {
+      const lines = [
+        `API key configured: ${payload.api_key_configured}`,
+        `API secret configured: ${payload.api_secret_configured}`,
+        `API key preview: ${payload.api_key_masked || "-"}`,
+        `LIVE_DRY_RUN: ${payload.live_dry_run}`,
+        `LIVE_LOG_PATH: ${payload.live_log_path}`,
+        `Candidate symbols: ${(payload.candidate_symbols || []).join(", ")}`,
+      ];
+      setStatus(configStatusEl, lines.join("\n"), "good");
+    }
+
+    async function loadConfigStatus() {
+      try {
+        const response = await fetch("/api/config-status", { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        renderConfigStatus(await response.json());
+      } catch (error) {
+        setStatus(configStatusEl, `Failed to load config status: ${error.message}`, "bad");
+      }
+    }
+
+    formEl.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const formData = new FormData(formEl);
+      const payload = {
+        api_key: String(formData.get("api_key") || ""),
+        api_secret: String(formData.get("api_secret") || ""),
+      };
+
+      try {
+        const response = await fetch("/api/config", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.error || `HTTP ${response.status}`);
+        }
+        setStatus(submitStatusEl, "Simulation config saved.", "good");
+        renderConfigStatus(result.status);
+        formEl.reset();
+      } catch (error) {
+        setStatus(submitStatusEl, `Save failed: ${error.message}`, "bad");
+      }
+    });
+
+    loadConfigStatus();
+  </script>
+</body>
+</html>

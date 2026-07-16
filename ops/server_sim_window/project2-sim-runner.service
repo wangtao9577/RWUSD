@@ -1,0 +1,15 @@
+[Unit]
+Description=Project2 RWUSD simulation runner daemon
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/apps/project2
+ExecStart=/usr/bin/env bash /opt/apps/project2/ops/server_sim_window/run_project2_sim_forever.sh
+Restart=always
+RestartSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,43 @@
+# Local credentials and environment overrides
+.env
+.env.*
+!.env.example
+!examples/*.env.example
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Runtime state, logs, and generated reports
+tmp/
+tmp_*/
+*.db
+*.sqlite
+*.sqlite3
+*.jsonl
+*.log
+server_test_window/data/
+
+# Local tooling and deployment leftovers
+.agents/
+.codex/
+_shadow/
+_deploy_sync_backup/
+
+# Archives and rendered research material
+*.zip
+*.tar.gz
+*.pdf
+*.png
+*.jpg
+*.jpeg
+
+# Legacy DBRSI integration tests are outside this standalone strategy package.
+tests/unit/test_dbrsi_runtime_restore_policy.py
+tests/unit/test_project2_simulation_light_view.py
+tests/unit/test_project2_simulation_view.py
+tests/unit/test_server_test_window.py
+tests/unit/test_shadow_*.py
+tests/unit/test_tmp_probe_*.py

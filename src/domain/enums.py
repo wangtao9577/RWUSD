@@ -1,0 +1,18 @@
+from enum import Enum
+
+
+class PositionSide(str, Enum):
+    LONG = "LONG"
+    SHORT = "SHORT"
+
+
+class StrategyPhase(str, Enum):
+    IDLE = "IDLE"
+    SELECTING_SYMBOL = "SELECTING_SYMBOL"
+    OPENING_HEDGE = "OPENING_HEDGE"
+    HEDGED = "HEDGED"
+    TAKING_PROFIT = "TAKING_PROFIT"
+    REBALANCING = "REBALANCING"
+    PROFIT_SWEEPING = "PROFIT_SWEEPING"
+    RISK_REDUCTION = "RISK_REDUCTION"
+    PAUSED = "PAUSED"
